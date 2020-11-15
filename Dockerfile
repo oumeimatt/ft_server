@@ -3,6 +3,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
 RUN apt-get install -y wget
 
+ADD srcs/localhost.sql /temp/
+
 # Setting up nginx
 RUN apt-get install -y nginx 
 RUN rm etc/nginx/sites-enabled/default
@@ -47,5 +49,5 @@ RUN chown -R www-data /var/www/*
 RUN chmod 755 /var/www/*
 
 EXPOSE 80 443
-CMD chown -R mysql:mysql /var/lib/mysql /var/run/mysqld && service mysql start && service php7.3-fpm start && service nginx start && echo "CREATE DATABASE wp_db;" | mysql -u root && echo "GRANT ALL PRIVILEGES ON wp_db.* TO 'wp_user'@'localhost' IDENTIFIED BY '123';" | mysql -u root  ; cat
+CMD chown -R mysql:mysql /var/lib/mysql /var/run/mysqld && service mysql start && service php7.3-fpm start && service nginx start && echo "CREATE DATABASE wp_db;" | mysql -u root </temp/localhost.sql | mysql -u root && echo "GRANT ALL PRIVILEGES ON wp_db.* TO 'wp_user'@'localhost' IDENTIFIED BY '123';" | mysql -u root  ; cat
   
